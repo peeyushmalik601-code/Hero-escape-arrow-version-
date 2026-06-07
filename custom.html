@@ -1,1 +1,309 @@
 
+<!DOCTYPE html>                                                   <html lang="en" data-theme="light">                               <head>                                                            <meta charset="UTF-8"/>                                           <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no"/>                                             <title>Arrow Escape – Level Creator</title>                       <link rel="preconnect" href="https://fonts.googleapis.com"/>      <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>                                                                <style>                                                           :root,[data-theme="light"]{                                       --bg:#f8fafc;--surface:#ffffff;--surface2:#f1f5f9;--border:#e2e8f0;--gold:#f59e0b;--gold-dark:#d97706;--gold-bg:#fffbeb;            --teal:#0d9488;--teal-bg:#f0fdfa;--red:#ef4444;--red-bg:#fef2f2;--green:#10b981;--purple:#8b5cf6;                                   --text:#1e293b;--text2:#475569;--muted:#94a3b8;--dim:#cbd5e1;--shadow-sm:0 1px 2px rgba(0,0,0,.05);                                 --shadow:0 4px 6px rgba(0,0,0,.07);--shadow-lg:0 10px 25px rgba(0,0,0,.1);--shadow-xl:0 20px 50px rgba(0,0,0,.15);                  --glass-bg:rgba(255,255,255,.7);--glass-border:rgba(0,0,0,.08);
+--hero2-bg:linear-gradient(135deg,#8b5cf6,#7c3aed);--hero2-border:#a78bfa;                                                          --hero3-bg:linear-gradient(135deg,#10b981,#059669);--hero3-border:#34d399;                                                          --obstacle-bg:linear-gradient(135deg,#e2e8f0,#cbd5e1);--obstacle-border:#94a3b8;--obstacle-color:#475569;                           }
+[data-theme="dark"]{
+--bg:#06090f;--surface:#0d1628;--surface2:#0f1a2e;--border:#1e3a5f;--gold:#f59e0b;--gold-dark:#fbbf24;--gold-bg:rgba(245,158,11,.08);
+--teal:#14b8a6;--teal-bg:rgba(20,184,166,.08);--red:#ef4444;--red-bg:rgba(239,68,68,.08);--green:#10b981;--purple:#8b5cf6;
+--text:#f1f5f9;--text2:#94a3b8;--muted:#64748b;--dim:#334155;--shadow-sm:0 1px 2px rgba(0,0,0,.3);
+--shadow:0 4px 6px rgba(0,0,0,.4);--shadow-lg:0 10px 25px rgba(0,0,0,.5);--shadow-xl:0 20px 50px rgba(0,0,0,.6);
+--glass-bg:rgba(13,22,40,.7);--glass-border:rgba(255,255,255,.1);
+--hero2-bg:linear-gradient(135deg,#6d28d9,#5b21b6);--hero2-border:#8b5cf6;
+--hero3-bg:linear-gradient(135deg,#047857,#065f46);--hero3-border:#10b981;
+--obstacle-bg:linear-gradient(135deg,#1e3a5f,#0f2744);--obstacle-border:#2d5a8e;--obstacle-color:#60a5fa;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);min-height:100vh;font-family:'Inter',sans-serif;color:var(--text);overflow-x:hidden;touch-action:manipulation;-webkit-user-select:none;user-select:none;transition:background .3s}
+#app{display:flex;flex-direction:column;align-items:center;padding:12px 8px 40px;max-width:680px;margin:0 auto}
+#header{width:100%;padding:12px 0}
+#header-inner{display:flex;align-items:center;justify-content:space-between;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow)}
+.title-main{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.3rem,5vw,2rem);color:var(--text);line-height:1}
+.title-accent{font-size:clamp(.4rem,1.5vw,.5rem);color:var(--teal);font-weight:600}
+#level-number{font-family:'Bebas Neue',sans-serif;font-size:clamp(1rem,4vw,1.2rem);color:var(--teal);text-align:right}
+.btn-back{font-weight:600;cursor:pointer;border-radius:8px;font-size:clamp(.45rem,1.5vw,.55rem);padding:6px 12px;border:1.5px solid var(--border);background:var(--surface);color:var(--text2);margin:8px 0;align-self:flex-start}
+.btn-back:hover{border-color:var(--teal);color:var(--teal)}
+#howto-bubble{width:100%;margin:8px 0}
+#howto-toggle{font-weight:600;cursor:pointer;border-radius:10px;font-size:clamp(.45rem,1.6vw,.52rem);padding:8px 14px;border:1.5px solid var(--teal);background:var(--teal-bg);color:var(--teal);box-shadow:var(--shadow-sm);transition:all .2s;display:inline-flex;align-items:center;gap:5px}
+#howto-toggle:hover{background:var(--teal);color:#fff}
+#howto-content{display:none;background:var(--glass-bg);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--glass-border);border-radius:12px;padding:12px 14px;margin-top:6px;font-size:clamp(.4rem,1.5vw,.48rem);color:var(--text2);line-height:1.8;box-shadow:var(--shadow-sm);animation:expandDown .3s ease}
+#howto-content.show{display:block}
+@keyframes expandDown{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+#howto-content b{color:var(--teal)}
+#howto-content .step{color:var(--gold-dark);font-weight:700}
+#size-selector{display:flex;gap:8px;align-items:center;margin:10px 0;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px 14px;box-shadow:var(--shadow-sm);width:100%}
+#size-selector label{font-size:clamp(.42rem,1.5vw,.5rem);font-weight:600;color:var(--text2);white-space:nowrap}
+#size-selector select{font-size:clamp(.45rem,1.5vw,.5rem);padding:6px 8px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-family:'Inter',sans-serif;cursor:pointer}
+#board-wrap{position:relative;background:var(--surface);border-radius:14px;border:2px solid var(--teal);box-shadow:var(--shadow-lg);overflow:hidden;touch-action:none;margin:0 auto;cursor:crosshair}
+.cell{position:absolute;border-radius:7px;display:flex;align-items:center;justify-content:center;transition:all .12s;pointer-events:none}
+.cell.obstacle{background:var(--obstacle-bg);border:2px solid var(--obstacle-border);color:var(--obstacle-color);font-size:clamp(.8em,3vw,1.1em);font-weight:700}
+.cell.hero{background:linear-gradient(135deg,#f59e0b,#d97706);border:2px solid #fbbf24;box-shadow:0 0 14px rgba(245,158,11,.4);color:#fff;font-size:clamp(1em,4vw,1.3em);font-weight:900;animation:heroFloat 2.2s infinite}
+.cell.hero2{background:var(--hero2-bg);border:2px solid var(--hero2-border);box-shadow:0 0 14px rgba(139,92,246,.4);color:#fff;font-size:clamp(1em,4vw,1.3em);font-weight:900;animation:heroFloat 2.2s .3s infinite}
+.cell.hero3{background:var(--hero3-bg);border:2px solid var(--hero3-border);box-shadow:0 0 14px rgba(16,185,129,.4);color:#fff;font-size:clamp(1em,4vw,1.3em);font-weight:900;animation:heroFloat 2.2s .6s infinite}
+.cell.empty{background:var(--bg);border:1px solid var(--border)}
+.cell.exit{background:var(--teal-bg);border:2px solid var(--teal);animation:exitPulse 2s infinite;font-size:clamp(1.1em,4vw,1.5em)}
+.cell.exit2{background:rgba(139,92,246,.1);border:2px solid var(--purple);animation:exitPulse 2s infinite .5s;font-size:clamp(1.1em,4vw,1.5em)}
+.cell.exit3{background:rgba(16,185,129,.1);border:2px solid var(--green);animation:exitPulse 2s infinite 1s;font-size:clamp(1.1em,4vw,1.5em)}
+@keyframes heroFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+@keyframes exitPulse{0%,100%{box-shadow:0 0 8px rgba(13,148,136,.2)}50%{box-shadow:0 0 18px rgba(13,148,136,.4)}}
+#palette{display:flex;gap:6px;margin:10px 0;flex-wrap:wrap;justify-content:center;align-items:center;width:100%}
+.palette-item{cursor:pointer;padding:6px 10px;border-radius:8px;font-size:clamp(.4rem,1.5vw,.5rem);font-weight:700;border:2px solid var(--border);background:var(--surface);color:var(--text);box-shadow:var(--shadow-sm);transition:all .2s;display:flex;align-items:center;gap:4px;user-select:none;white-space:nowrap}
+.palette-item:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
+.palette-item.selected{border-color:var(--gold);box-shadow:0 0 14px rgba(245,158,11,.4);background:var(--gold-bg);transform:scale(1.04)}
+.palette-item .pal-icon{font-size:clamp(.9rem,3vw,1.1rem)}
+.palette-item.hero-item{border-color:#f59e0b44}.palette-item.hero2-item{border-color:#8b5cf644}.palette-item.hero3-item{border-color:#10b98144}
+.palette-item.exit-item{border-color:var(--teal)}.palette-item.exit2-item{border-color:var(--purple)}.palette-item.exit3-item{border-color:var(--green)}
+.palette-item.obstacle-item{border-color:#94a3b8}.palette-item.eraser-item{border-color:var(--red)}
+.tooltip-popup{display:none;position:fixed;background:var(--glass-bg);backdrop-filter:blur(15px);-webkit-backdrop-filter:blur(15px);border:2px solid var(--red);border-radius:12px;padding:12px 16px;text-align:center;box-shadow:var(--shadow-xl);z-index:500;max-width:260px;font-size:clamp(.42rem,1.5vw,.48rem);color:var(--text);animation:popupIn .3s ease}
+.tooltip-popup.show{display:block;pointer-events:auto}
+.tooltip-popup.clear-tip{border-color:var(--red)}.tooltip-popup.erase-tip{border-color:var(--red)}
+@keyframes popupIn{from{opacity:0;transform:translate(-50%,-50%) scale(.9)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+#action-buttons{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;justify-content:center;width:100%}
+.btn{font-weight:600;cursor:pointer;border-radius:8px;font-size:clamp(.48rem,1.6vw,.55rem);padding:10px 16px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);box-shadow:var(--shadow-sm);transition:all .2s;white-space:nowrap}
+.btn:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
+.btn-save{border-color:var(--teal);color:var(--teal);background:var(--teal-bg);font-size:clamp(.5rem,1.8vw,.6rem);padding:12px 20px}
+.btn-save:hover{background:var(--teal);color:#fff}
+.btn-clear{border-color:var(--red);color:var(--red)}.btn-clear:hover{background:var(--red-bg)}
+#save-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);align-items:center;justify-content:center;z-index:600}
+#save-modal.show{display:flex}
+#save-box{background:var(--surface);border:2px solid var(--teal);border-radius:18px;padding:24px 28px;text-align:center;box-shadow:var(--shadow-xl);max-width:340px;width:90%;animation:popupIn .4s ease}
+#save-box h3{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.2rem,5vw,1.5rem);color:var(--teal);margin-bottom:14px;letter-spacing:2px}
+#save-box label{display:block;font-size:clamp(.42rem,1.5vw,.5rem);color:var(--text2);font-weight:600;text-align:left;margin-bottom:4px;margin-top:8px}
+#save-box input{width:100%;padding:10px 12px;border:2px solid var(--border);border-radius:8px;font-size:clamp(.48rem,1.6vw,.55rem);font-family:'Inter',sans-serif;background:var(--surface2);color:var(--text);transition:border .2s}
+#save-box input:focus{outline:none;border-color:var(--teal)}
+#save-box .btn-row{display:flex;gap:8px;margin-top:16px;justify-content:center}
+#success-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);align-items:center;justify-content:center;z-index:700}
+#success-modal.show{display:flex}
+#success-box{background:var(--surface);border:2px solid var(--green);border-radius:18px;padding:28px 32px;text-align:center;box-shadow:var(--shadow-xl);max-width:340px;width:90%;animation:popupIn .4s ease}
+#success-box .success-icon{font-size:3rem;margin-bottom:8px}
+#success-box h3{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:var(--green);margin-bottom:6px;letter-spacing:1px}
+#success-box p{font-size:.5rem;color:var(--text2);margin-bottom:16px}
+#success-box .btn-ok{font-weight:600;cursor:pointer;border-radius:8px;font-size:.55rem;padding:10px 30px;border:none;background:var(--green);color:#fff;box-shadow:var(--shadow-sm);transition:all .2s}
+#success-box .btn-ok:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
+#feedback{font-size:clamp(.42rem,1.5vw,.5rem);color:var(--muted);margin-top:6px;text-align:center;min-height:18px}
+#theme-toggle{position:fixed;top:16px;right:16px;z-index:200;font-size:1.1rem;cursor:pointer;background:var(--surface);border:1px solid var(--border);border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-sm);color:var(--text)}
+#theme-toggle:hover{box-shadow:0 0 16px rgba(13,148,136,.3);transform:scale(1.1)}
+</style>
+</head>
+<body>
+<div id="theme-toggle" onclick="toggleTheme()">🌙</div>
+<div id="app">
+  <button class="btn-back" onclick="goBack()">← BACK TO MENU</button>
+  <div id="header"><div id="header-inner"><div><div class="title-main">LEVEL CREATOR</div><div class="title-accent">DESIGN · BUILD · SHARE</div></div><div id="level-number">NEW LEVEL</div></div></div>
+
+  <div id="howto-bubble">
+    <button id="howto-toggle" onclick="toggleHowTo()">📖 HOW TO CREATE</button>
+    <div id="howto-content">
+      <span class="step">1.</span> Choose <b>Grid Size</b> above<br>
+      <span class="step">2.</span> Select a <b>piece</b> from palette<br>
+      <span class="step">3.</span> <b>Tap</b> on board to place it<br>
+      <span class="step">4.</span> Place <b>Heroes</b> first, then <b>Exits</b><br>
+      <span class="step">5.</span> Fill with <b>Obstacles</b><br>
+      <span class="step">6.</span> Use <b>Eraser</b> to remove pieces<br>
+      <span class="step">7.</span> Tap <b>Save</b> when done!
+    </div>
+  </div>
+
+  <div id="size-selector">
+    <label>📐 GRID:</label>
+    <select id="grid-size" onchange="changeGridSize()">
+      <option value="3">3×3</option><option value="4">4×4</option><option value="5" selected>5×5</option>
+      <option value="6">6×6</option><option value="7">7×7</option><option value="8">8×8</option>
+    </select>
+  </div>
+
+  <div id="board-wrap"><div id="board"></div></div>
+
+  <div id="palette">
+    <div class="palette-item hero-item selected" data-piece="hero" onclick="selectPiece('hero')"><span class="pal-icon">🦸</span>Hero1</div>
+    <div class="palette-item hero2-item" data-piece="hero2" onclick="selectPiece('hero2')"><span class="pal-icon">🦹</span>Hero2</div>
+    <div class="palette-item hero3-item" data-piece="hero3" onclick="selectPiece('hero3')"><span class="pal-icon">🧙</span>Hero3</div>
+    <div class="palette-item exit-item" data-piece="exit" onclick="selectPiece('exit')"><span class="pal-icon">⭐</span>Exit1</div>
+    <div class="palette-item exit2-item" data-piece="exit2" onclick="selectPiece('exit2')"><span class="pal-icon">⭐</span>Exit2</div>
+    <div class="palette-item exit3-item" data-piece="exit3" onclick="selectPiece('exit3')"><span class="pal-icon">⭐</span>Exit3</div>
+    <div class="palette-item obstacle-item" data-piece="obstacle" onclick="selectPiece('obstacle')"><span class="pal-icon">⏹</span>Block</div>
+    <div class="palette-item eraser-item" data-piece="empty" onclick="selectPiece('empty')" id="eraser-btn"><span class="pal-icon"> 🧹</span>Erase</div>
+  </div>
+
+  <div id="action-buttons">
+    <button class="btn btn-clear" id="clear-btn" onclick="showClearPopup()">🗑️ CLEAR ALL</button>
+    <button class="btn btn-save" onclick="openSaveModal()">💾 SAVE LEVEL</button>
+  </div>
+  <div id="feedback"></div>
+</div>
+
+<div class="tooltip-popup erase-tip" id="eraser-tooltip">🧹 <b>Tap any cell</b> to remove it.</div>
+<div class="tooltip-popup clear-tip" id="clear-tooltip">
+  🗑️ <b>Clear entire board?</b><br>All pieces will be removed.<br><br>
+  <button onclick="confirmClear()" style="padding:6px 14px;border-radius:6px;border:none;background:var(--red);color:#fff;font-weight:600;cursor:pointer;font-size:.45rem;margin-right:4px">YES, CLEAR</button>
+  <button onclick="closeClearTooltip()" style="padding:6px 14px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text);font-weight:600;cursor:pointer;font-size:.45rem">CANCEL</button>
+</div>
+
+<!-- Save Modal -->
+<div id="save-modal">
+  <div id="save-box">
+    <h3>💾 SAVE LEVEL</h3>
+    <label>🎮 LEVEL NAME</label>
+    <input type="text" id="save-name" placeholder="My Awesome Level" maxlength="30">
+    <label>✍️ YOUR NAME</label>
+    <input type="text" id="save-creator" placeholder="Your name" maxlength="20">
+    <div class="btn-row">
+      <button class="btn" onclick="closeSaveModal()" style="border-color:var(--muted);color:var(--muted)">CANCEL</button>
+      <button class="btn btn-save" onclick="confirmSave()">💾 SAVE</button>
+    </div>
+  </div>
+</div>
+
+<!-- Success Modal -->
+<div id="success-modal">
+  <div id="success-box">
+    <div class="success-icon">🎉</div>
+    <h3>LEVEL ADDED!</h3>
+    <p>Your custom level has been saved successfully.</p>
+    <button class="btn-ok" onclick="goToIntro()">OK</button>
+  </div>
+</div>
+
+<script>
+const PAD=10,GAP=5;
+let gridSize=5,grid=[],CELL=50,S=CELL+GAP;
+let selectedPiece='hero';
+let heroCount=0,exitCount=0;
+let howToVisible=false;
+
+// Theme sync
+function getTheme(){return localStorage.getItem('arrowEscapeTheme')||'light'}
+function setTheme(t){document.documentElement.setAttribute('data-theme',t);localStorage.setItem('arrowEscapeTheme',t);document.getElementById('theme-toggle').textContent=t==='dark'?'☀️':'🌙'}
+setTheme(getTheme());
+window.toggleTheme=function(){setTheme(getTheme()==='dark'?'light':'dark')}
+
+function initGrid(sz){
+  gridSize=sz;grid=Array(sz).fill().map(()=>Array(sz).fill('empty'));
+  heroCount=0;exitCount=0;selectedPiece='hero';
+  document.querySelectorAll('.palette-item').forEach(p=>p.classList.remove('selected'));
+  document.querySelector('.palette-item.hero-item').classList.add('selected');
+  document.getElementById('level-number').textContent='NEW LEVEL';
+  setFeedback('');closeAllTooltips();render();
+}
+function changeGridSize(){initGrid(parseInt(document.getElementById('grid-size').value))}
+function selectPiece(type){
+  selectedPiece=type;closeAllTooltips();
+  document.querySelectorAll('.palette-item').forEach(p=>p.classList.remove('selected'));
+  let el=document.querySelector(`.palette-item[data-piece="${type}"]`);
+  if(el) el.classList.add('selected');
+  if(type==='empty') showEraserTooltip();
+}
+function setFeedback(msg){document.getElementById('feedback').textContent=msg}
+
+function showEraserTooltip(){
+  closeAllTooltips();
+  const btn=document.getElementById('eraser-btn');const rect=btn.getBoundingClientRect();
+  const tip=document.getElementById('eraser-tooltip');
+  tip.style.top=(rect.top-70)+'px';tip.style.left=(rect.left+rect.width/2)+'px';
+  tip.classList.add('show');
+}
+function closeAllTooltips(){
+  document.getElementById('eraser-tooltip').classList.remove('show');
+  document.getElementById('clear-tooltip').classList.remove('show');
+}
+function showClearPopup(){
+  closeAllTooltips();
+  const btn=document.getElementById('clear-btn');const rect=btn.getBoundingClientRect();
+  const tip=document.getElementById('clear-tooltip');
+  tip.style.top=(rect.top-100)+'px';tip.style.left=(rect.left+rect.width/2)+'px';
+  tip.classList.add('show');
+}
+function confirmClear(){initGrid(gridSize);setFeedback('🗑️ Board cleared!');closeAllTooltips()}
+function closeClearTooltip(){document.getElementById('clear-tooltip').classList.remove('show')}
+window.showClearPopup=showClearPopup;window.confirmClear=confirmClear;window.closeClearTooltip=closeClearTooltip;
+
+function toggleHowTo(){
+  howToVisible=!howToVisible;
+  const content=document.getElementById('howto-content'),btn=document.getElementById('howto-toggle');
+  if(howToVisible){content.classList.add('show');btn.textContent='📖 HIDE'}else{content.classList.remove('show');btn.textContent='📖 HOW TO CREATE'}
+}
+window.toggleHowTo=toggleHowTo;
+
+function handleCellClick(r,c){
+  closeAllTooltips();
+  let current=grid[r][c];
+  if(current==='hero'||current==='hero2'||current==='hero3') heroCount--;
+  if(current==='exit'||current==='exit2'||current==='exit3') exitCount--;
+
+  if(selectedPiece==='empty'){grid[r][c]='empty';setFeedback(`🧹 Cleared`)}
+  else if(selectedPiece==='hero'||selectedPiece==='hero2'||selectedPiece==='hero3'){
+    let existing=findPiece(selectedPiece);if(existing){grid[existing.r][existing.c]='empty';heroCount--}
+    grid[r][c]=selectedPiece;heroCount++;setFeedback(`🦸 ${selectedPiece.toUpperCase()} placed`)
+  }else if(selectedPiece==='exit'||selectedPiece==='exit2'||selectedPiece==='exit3'){
+    let existing=findPiece(selectedPiece);if(existing){grid[existing.r][existing.c]='empty';exitCount--}
+    grid[r][c]=selectedPiece;exitCount++;setFeedback(`⭐ ${selectedPiece.toUpperCase()} placed`)
+  }else if(selectedPiece==='obstacle'){grid[r][c]='obstacle';setFeedback(`⏹ Block placed`)}
+  render();
+}
+function findPiece(type){for(let r=0;r<gridSize;r++) for(let c=0;c<gridSize;c++){if(grid[r][c]===type) return{r,c}}return null}
+
+function getCellFromEvent(e){
+  const board=document.getElementById("board"),rect=board.getBoundingClientRect();
+  const x=e.clientX-rect.left,y=e.clientY-rect.top;
+  let col=Math.floor((x-PAD)/S),row=Math.floor((y-PAD)/S);
+  if(col<0||col>=gridSize||row<0||row>=gridSize) return null;
+  return{row,col};
+}
+document.getElementById("board-wrap").addEventListener("click",function(e){const cell=getCellFromEvent(e);if(cell) handleCellClick(cell.row,cell.col)});
+
+function computeCellSize(sz){const maxWidth=Math.min(window.innerWidth-24,600);const desiredCell=Math.floor((maxWidth-2*PAD+GAP)/sz-GAP);return Math.max(30,Math.min(65,desiredCell))}
+function render(){
+  CELL=computeCellSize(gridSize);S=CELL+GAP;const boardPx=PAD*2+gridSize*S-GAP;
+  const bw=document.getElementById("board-wrap");bw.style.width=boardPx+"px";bw.style.height=boardPx+"px";
+  const board=document.getElementById("board");board.style.position="relative";board.style.width=boardPx+"px";board.style.height=boardPx+"px";board.innerHTML="";
+  for(let r=0;r<gridSize;r++) for(let c=0;c<gridSize;c++){
+    let cell=document.createElement("div");cell.className="cell "+grid[r][c];
+    cell.style.top=(PAD+r*S)+"px";cell.style.left=(PAD+c*S)+"px";cell.style.width=CELL+"px";cell.style.height=CELL+"px";
+    if(grid[r][c]==='hero') cell.textContent="🦸";else if(grid[r][c]==='hero2') cell.textContent="🦹";else if(grid[r][c]==='hero3') cell.textContent="🧙";
+    else if(grid[r][c]==='obstacle') cell.textContent="⏹";else if(grid[r][c]==='exit'||grid[r][c]==='exit2'||grid[r][c]==='exit3') cell.textContent="⭐";
+    board.appendChild(cell);
+  }
+}
+
+// Save with success popup
+function openSaveModal(){
+  let hasHero=findPiece('hero')||findPiece('hero2')||findPiece('hero3');
+  let hasExit=findPiece('exit')||findPiece('exit2')||findPiece('exit3');
+  if(!hasHero){setFeedback('⚠️ Place at least ONE Hero!');return}
+  if(!hasExit){setFeedback('⚠️ Place at least ONE Exit!');return}
+  if(heroCount!==exitCount){setFeedback('⚠️ Heroes and Exits count must match!');return}
+  document.getElementById('save-modal').classList.add('show');
+  document.getElementById('save-name').value='';
+  document.getElementById('save-creator').value='';
+}
+function closeSaveModal(){document.getElementById('save-modal').classList.remove('show')}
+function confirmSave(){
+  let name=document.getElementById('save-name').value.trim()||'My Custom Level';
+  let creator=document.getElementById('save-creator').value.trim()||'Anonymous';
+  closeSaveModal();
+  let heroes=[],exits=[];
+  for(let r=0;r<gridSize;r++) for(let c=0;c<gridSize;c++){
+    if(grid[r][c]==='hero'){heroes.push({row:r,col:c,type:'hero'});exits.push(findPiece('exit'))}
+    if(grid[r][c]==='hero2'){heroes.push({row:r,col:c,type:'hero2'});exits.push(findPiece('exit2'))}
+    if(grid[r][c]==='hero3'){heroes.push({row:r,col:c,type:'hero3'});exits.push(findPiece('exit3'))}
+  }
+  heroes.forEach((h,i)=>{if(exits[i]) h.exit={row:exits[i].r,col:exits[i].c}});
+  let obstacles=[];for(let r=0;r<gridSize;r++) for(let c=0;c<gridSize;c++){if(grid[r][c]==='obstacle') obstacles.push({row:r,col:c})}
+  let levelData={name:name,creator:creator,size:gridSize,heroes:heroes,obstacles:obstacles,diff:'custom',hint:'Custom level by '+creator};
+  let customLevels=JSON.parse(localStorage.getItem('arrowEscapeCustomLevels')||'[]');
+  customLevels.push(levelData);
+  localStorage.setItem('arrowEscapeCustomLevels',JSON.stringify(customLevels));
+  document.getElementById('level-number').textContent='LEVEL '+(50+customLevels.length);
+  setFeedback('✅ "'+name+'" saved!');
+  document.getElementById('success-modal').classList.add('show');
+}
+window.openSaveModal=openSaveModal;window.closeSaveModal=closeSaveModal;window.confirmSave=confirmSave;
+
+function goToIntro(){window.location.href='intro.html'}
+window.goToIntro=goToIntro;
+
+function goBack(){window.location.href='intro.html'}
+window.addEventListener('resize',render);
+document.addEventListener('click',function(e){if(!e.target.closest('#clear-btn')&&!e.target.closest('#clear-tooltip')&&!e.target.closest('#eraser-btn')&&!e.target.closest('#eraser-tooltip')) closeAllTooltips()});
+initGrid(5);
+</script>
+</body>
+</html>
